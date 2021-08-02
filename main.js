@@ -1,8 +1,16 @@
 const express = require("express");
 const MongoClient = require("mongodb").MongoClient;
 const objectId = require("mongodb").ObjectID;
+const base_url = "/api/users"
 
 const app = express();
+
+app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+});
+
 const jsonParser = express.json();
 
 const mongoClient = new MongoClient("mongodb://localhost:9999/", { useUnifiedTopology: true });
@@ -20,7 +28,7 @@ mongoClient.connect(function(err, client){
     });
 });
 
-app.get("/api/users", function(req, res){
+app.get(`${base_url}`, function(req, res){
 
     const collection = req.app.locals.collection;
     collection.find({}).toArray(function(err, users){
@@ -31,7 +39,7 @@ app.get("/api/users", function(req, res){
 
 });
 
-app.get("/api/users/:id", function(req, res){
+app.get(`${base_url}:id`, function(req, res){
 
     const id = new objectId(req.params.id);
     const collection = req.app.locals.collection;
@@ -42,7 +50,7 @@ app.get("/api/users/:id", function(req, res){
     });
 });
 
-app.post("/api/users", jsonParser, function (req, res) {
+app.post(`${base_url}`, jsonParser, function (req, res) {
 
     if(!req.body) return res.sendStatus(400);
 
@@ -58,7 +66,7 @@ app.post("/api/users", jsonParser, function (req, res) {
     });
 });
 
-app.delete("/api/users/:id", function(req, res){
+app.delete(`${base_url}:id`, function(req, res){
 
     const id = new objectId(req.params.id);
     const collection = req.app.locals.collection;
@@ -70,7 +78,7 @@ app.delete("/api/users/:id", function(req, res){
     });
 });
 
-app.put("/api/users", jsonParser, function(req, res){
+app.put(`${base_url}`, jsonParser, function(req, res){
 
     if(!req.body) return res.sendStatus(400);
     const id = new objectId(req.body.id);
