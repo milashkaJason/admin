@@ -44,6 +44,7 @@ app.get(`${base_url}:id`, function(req, res){
     const id = new objectId(req.params.id);
     const collection = req.app.locals.collection;
     collection.findOne({_id: id}, function(err, user){
+        console.log('here')
 
         if(err) return console.log(err);
         res.send(user);
